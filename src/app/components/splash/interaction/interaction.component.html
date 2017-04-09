@@ -1,0 +1,24 @@
+
+<span class='bot-output'>
+    {{output}}
+    <span *ngIf=botIsTalking>_</span>
+</span>
+
+<div *ngIf=!botIsTalking [ngSwitch]='interaction.type' class='input-container'>
+    <span class='carret'>></span>
+
+    <yes-no     *ngSwitchCase='interactionType.YesNo'
+                [focus]='isFocused()'
+                [tryToSubmit]='tryToSubmitBound'>
+    </yes-no>
+
+    <free-type   *ngSwitchCase=interactionType.Free
+                [focus]='isFocused()'
+                [tryToSubmit]='tryToSubmitBound'></free-type>
+
+    <fake-type  *ngSwitchCase=interactionType.Fake
+                [focus]='isFocused()'
+                [tryToSubmit]='tryToSubmitBound'
+                replacementSentence='{{interaction.getOverwrite()}}'></fake-type>
+
+</div>

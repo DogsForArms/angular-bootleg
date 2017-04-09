@@ -1,0 +1,68 @@
+// @size-conversation: 20px;
+@size-conversation: 14px;
+@color-dim:  rgba(255,255,255,0.6);
+@color-bright: white;
+
+interaction {
+    font-size: @size-conversation;
+    float: left;
+    clear: left;
+    margin: 15px 0px;
+    width: 100%;
+    position:relative;
+    font-family: "Terminal";
+    color: @color-dim;
+
+    .bot-output {}
+
+    .input-container {
+        display: flex;
+        margin-top: 10px;
+
+        .carret {
+            margin-right: 5px;
+        }
+
+        yes-no {
+            flex: 2;
+            resize: none;
+
+            .options-container {
+                color: rgba(255,255,255,0.6);
+
+                .selected {
+                    text-transform: capitalize;
+                    color: @color-bright;
+                }
+            }
+        }
+
+        fake-type {
+            flex: 2;
+
+            textarea {
+                padding-bottom: 7px;
+            }
+        }
+
+        type-any {
+            flex: 2;
+        }
+
+        textarea {
+            width: 100%;
+            color: @color-bright;
+
+            font-size: @size-conversation;
+            font-family: "Terminal";
+
+            background-color: transparent;
+            border: none;
+            outline: none;
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+            resize: none;
+        }
+    }
+}
