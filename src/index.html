@@ -9,8 +9,9 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
   <script>
-    var fixedLocation = location.hash.substring(1);
+    var fixedLocation = (''+location).split(/#!/).slice(1).join('#!');
     if (fixedLocation) {
+        console.log("Redirect from s3 #!: " + fixedLocation);
         history.pushState({}, "entry page", fixedLocation);
     }
   </script>
