@@ -5,5 +5,5 @@
 
 export const environment = {
   production: false,
-  apiRoot: 'http://lol.com/'
+  apiRoot: 'http://localhost:8080'
 };
