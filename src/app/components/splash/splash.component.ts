@@ -1,24 +1,35 @@
-import {Component} from "@angular/core"
-import {InteractionType, Interaction, Selector} from "./interaction/interaction"
+import { Component } from '@angular/core'
+import { InteractionType, Interaction, Selector } from './interaction/interaction'
+import { ConversationContextService, ConversationContextSaveParams, ConversationContextSaveResponse } from '../../services/conversationContext.service'
+
 
 @Component({
     moduleId: module.id,
     selector: "splash",
-    templateUrl: "splash.component.html"
+    templateUrl: "splash.component.html",
+    providers: [ ConversationContextService ]
 })
 
 export class SplashComponent {
 
     interactions: Interaction[] = []
     boundAddInteraction: (interaction: Interaction) => void
+    conversationContextId: number
 
-    constructor() {
-        this.addInteraction(this.buildConversationTree())
+    constructor(private conversationContextService: ConversationContextService) {
+        
         // this.addInteraction(this.buildAfterPitchConversationTree({}))
     }
 
     ngOnInit() {
-        this.boundAddInteraction = this.addInteraction.bind(this)
+        const self = this
+        self.boundAddInteraction = self.addInteraction.bind(self)
+        
+        this.conversationContextService.save({ conversationId: 1 })
+            .subscribe(convContext => {
+                self.conversationContextId = convContext.id
+                self.addInteraction(self.buildConversationTree())
+            })
     }
 
     addInteraction(interaction: Interaction) {
@@ -28,7 +39,6 @@ export class SplashComponent {
     // generate the conversation tree.
     buildConversationTree(): Interaction {
         let ctxt = {}
-
 
         function startVideo(interaction: Interaction) {
             let self = this
@@ -108,8 +118,19 @@ export class SplashComponent {
     }
 
     private saveInputInContext(key: string, ctxt: any) : (input:string) => void {
+        var self = this;
         return function(input: string): void {
+            //local ctxt save
             ctxt[key] = input
+            
+            //server ctxt save
+            var updatedCtxt = {}
+            updatedCtxt[key] = input
+            self.conversationContextService.save({
+                id: self.conversationContextId,
+                conversationId: 1,
+                context: updatedCtxt
+            }).subscribe(convContext => {})
         }
     }
 }

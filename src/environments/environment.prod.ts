@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiRoot: 'http://prodServer.com/'
+  apiRoot: 'http://ebbootlegnode-env-2.us-east-2.elasticbeanstalk.com'
 };
