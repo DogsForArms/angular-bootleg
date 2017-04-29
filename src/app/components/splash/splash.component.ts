@@ -102,7 +102,7 @@ export class SplashComponent {
         let doYouWantToBeNotified_yes_yes = new Interaction('Awesome!  Glad to hear.  Just leave your email down bellow.  Oops, g2g, dinner time.', InteractionType.Free, ctxt)
             .setOnInputHandler(this.saveInputInContext('email', ctxt))
         let doYouWantToBeNotified_yes_no = new Interaction('Woa... geeze, sorry.  Why not?', InteractionType.Free, ctxt)
-            .setOnInputHandler(this.saveInputInContext('no-email-reason', ctxt))
+            .setOnInputHandler(this.saveInputInContext('reasonForNotGivingEmail', ctxt))
         doYouWantToBeNotified_yes.initializeWithYesNoSelectors(doYouWantToBeNotified_yes_yes, doYouWantToBeNotified_yes_no)
 
         let doYouWantToBeNotified_no_yes = doYouWantToBeNotified_yes
