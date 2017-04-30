@@ -72,32 +72,35 @@ export class SplashComponent {
             .setOnInputHandler(this.saveInputInContext('referred', ctxt))
         afterGettingYourName.initializeWithYesNoSelectors(whoWasIt_yes, whoWasIt_no)
 
-        let areYouATheaterProfessional = new Interaction("Hey <name>, are you a theater professional?", ctxt);
+        let areYouATheaterProfessional = new Interaction("Hey <name>, are you a theater professional?", ctxt)
+            .setOnInputHandler(this.saveInputInContext('isTheaterProfessional', ctxt))
         whoWasIt_no.initializeWithAnyResponseSelector(areYouATheaterProfessional);
         whoWasIt_yes.initializeWithAnyResponseSelector(areYouATheaterProfessional);
 
         let theaterBusinessFeedback = new Interaction("If you could change just one thing about the business of theater in Chicago what would it be?", ctxt)
             .setOnInputHandler(this.saveInputInContext("whatIWouldChangeAboutTheaterBusiness", ctxt))
         let areYouATheaterGoer = new Interaction("Does that make you a theatergoer in Chicago?", ctxt)
+            .setOnInputHandler(this.saveInputInContext("isTheaterGoerInChicago", ctxt))
         areYouATheaterProfessional.initializeWithYesNoSelectors(theaterBusinessFeedback, areYouATheaterGoer);
 
-        let theatergoerFeedback = new Interaction("Is there anything about seeing theater in Chicago that leaves something to be desired?", ctxt);
-        let areYouOutsideOfChicago = new Interaction("Are you a theatergoer outside of Chicago?", ctxt);
+        let theatergoerFeedback = new Interaction("Is there anything about seeing theater in Chicago that leaves something to be desired?", ctxt)
+            .setOnInputHandler(this.saveInputInContext("whatIWouldChangeAboutSeeingTheater", ctxt));
+        let areYouOutsideOfChicago = new Interaction("Are you a theatergoer outside of Chicago?", ctxt)
+            .setOnInputHandler(this.saveInputInContext("isOutsideOfChicago", ctxt));
 
         areYouATheaterGoer.initializeWithYesNoSelectors(theatergoerFeedback, areYouOutsideOfChicago)
 
         let doYouPlanTripsToChicagoToSeeTheater = new Interaction("Have you ever planned a trip to Chicago with the intent of seeing theater?", ctxt)
-            .setOnInputHandler(this.saveInputInContext("isAChiagoTheaterTripPlanner", ctxt));
+            .setOnInputHandler(this.saveInputInContext("plansTripsToVisitChicagoForTheater", ctxt));
 
         //ends
         let awardsShowQuestion = new Interaction("Hey I have another question for you: what do you think of awards for theater?  What do you think their purpose is?  Do they have their desired effects?  Is there a good example of an effective theater award? (double spaced, due in 2 minutes).", ctxt)
-            .setOnInputHandler(this.saveInputInContext("purposeAndEffectsOfAwardsShowOpinion", ctxt));
+            .setOnInputHandler(this.saveInputInContext("thoughtsAboutTheaterAwards", ctxt));
         areYouOutsideOfChicago.initializeWithYesNoSelectors(doYouPlanTripsToChicagoToSeeTheater, awardsShowQuestion)
 
         theatergoerFeedback.initializeWithAnyResponseSelector(awardsShowQuestion);
         theaterBusinessFeedback.initializeWithAnyResponseSelector(awardsShowQuestion);
 
-        awardsShowQuestion.setOnInputHandler(this.saveInputInContext("awardsShowResponse", ctxt))
         awardsShowQuestion.initializeWithAnyResponseSelector(self.buildAfterPitchConversationTree2(ctxt))
 
         return hello
@@ -127,16 +130,18 @@ export class SplashComponent {
             .setOverwrite("Brilliant!  How did you ever come up with this idea?  Please take my money now.  Please take my social security.  My social security is 012-553-0213.  Tyler is so talented.  Ethan is so talented.  I love the internet, the internet loves me!")
 
         let askForFeedbackReal = new Interaction('Just having some fun!  What did you really think? We do want your honest input.  How do you see yourself using bootleg, if at all?  Take your time!', ctxt)
-            .setOnInputHandler(this.saveInputInContext('feedback', ctxt))
+            .setOnInputHandler(this.saveInputInContext('pitchFeedback', ctxt))
         
-        console.log("askForFeedbackFake: " +  askForFeedbackFake)
         askForFeedbackFake.initializeWithFakeResponseSelector(askForFeedbackReal)
 
         let doYouWantToBeNotified = new Interaction('Bootleg is almost a real thing, it will be here as soon as the founders quit their day-jobs.  Do you want me to tell you when it is real?', ctxt)
+            .setOnInputHandler(this.saveInputInContext('wantsToBeNotified', ctxt))
         askForFeedbackReal.initializeWithAnyResponseSelector(doYouWantToBeNotified)
 
         let doYouWantToBeNotified_yes = new Interaction('Great!  Now,  can I please have your email?  I swear upon the spirit of the internet that I will not spam you.', ctxt)
+            .setOnInputHandler(this.saveInputInContext('willGiveEmail', ctxt))
         let doYouWantToBeNotified_no = new Interaction("Oh well aren't you a busy person.  Too busy to be notified, but not too busy to stick around navigating a conversation tree.  Well congradulations - You turn down the corridor labeled \"no\" and a vampire appears.  You die horribly.  Maybe you want to try again...?", ctxt)
+            .setOnInputHandler(this.saveInputInContext('diesByVampireButWillTryAgain', ctxt))
 
         doYouWantToBeNotified.initializeWithYesNoSelectors(doYouWantToBeNotified_yes, doYouWantToBeNotified_no)
 
@@ -153,7 +158,6 @@ export class SplashComponent {
 
         let wink = new Interaction(";)", ctxt)
         doYouWantToBeNotified_yes_yes.initializeWithAnyResponseSelector(wink)
-
 
         return askForFeedbackFake
     }
