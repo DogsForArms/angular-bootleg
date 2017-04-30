@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, ElementRef, ViewChild } from '@angular/core'
 import { InteractionType, Interaction, Selector } from './interaction/interaction'
 import { ConversationContextService, ConversationContextSaveParams, ConversationContextSaveResponse } from '../../services/conversationContext.service'
 import { VideoComponent } from '../video.component'
@@ -16,7 +16,16 @@ export class SplashComponent {
     boundAddInteraction: (interaction: Interaction) => void
     conversationContextId: number
 
+    @ViewChild('scroll')
+    private scrollContainer: ElementRef;
+
     constructor(private conversationContextService: ConversationContextService) {
+    }
+    
+    scrollToBottom(): void {
+        try {
+            this.scrollContainer.nativeElement.scrollTop = this.scrollContainer.nativeElement.scrollHeight;
+        } catch(err) { }                 
     }
 
     ngOnInit() {
@@ -28,6 +37,11 @@ export class SplashComponent {
                 self.conversationContextId = convContext.id
                 self.addInteraction(self.buildConversationTree())
             })
+        this.scrollToBottom();
+    }
+
+    ngAfterViewChecked() {
+        this.scrollToBottom();
     }
 
     addInteraction(interaction: Interaction) {
@@ -37,15 +51,7 @@ export class SplashComponent {
     // generate the conversation tree.
     buildConversationTree(): Interaction {
         let ctxt = {}
-
-        function startVideo(interaction: Interaction) {
-            let self = this
-            console.log('state: playVideo')
-            setTimeout(()=> {
-                console.log('state: resumeConversation')
-                self.addInteraction(self.buildAfterPitchConversationTree(ctxt))
-            }, 5 * 1000)
-        }
+        let self = this
 
         let hello = new Interaction("Is someone there?", InteractionType.YesNo, ctxt)
 
@@ -66,22 +72,44 @@ export class SplashComponent {
             .setOnInputHandler(this.saveInputInContext('referred', ctxt))
         afterGettingYourName.initializeWithYesNoSelectors(whoWasIt_yes, whoWasIt_no)
 
-        let afterGettingReference = new Interaction("So, then I assume <referred> filled you in.  Right?", InteractionType.YesNo, ctxt)
-        whoWasIt_yes.initializeWithAnyResponseSelector(afterGettingReference)
-        whoWasIt_no.initializeWithAnyResponseSelector(afterGettingReference)
+        let areYouATheaterProfessional = new Interaction("Hey <name>, are you a theater professional?", InteractionType.YesNo, ctxt);
+        whoWasIt_no.initializeWithAnyResponseSelector(areYouATheaterProfessional);
+        whoWasIt_yes.initializeWithAnyResponseSelector(areYouATheaterProfessional);
 
-        let afterGettingReference_yes = new Interaction("Well, listen, my papas worked really hard on this pitch, so .... just... so just listen.  Okay?  Is your sound on? Turn it on!", InteractionType.None, ctxt)
-            .setOnPromptComplete(startVideo.bind(this))
-        let afterGettingReference_no = new Interaction("Oh.  Great!  Good good good!  Just... relax then.  Turn up your sound!  Here we go!", InteractionType.None, ctxt)
-            .setOnPromptComplete(startVideo.bind(this))
+        let theaterBusinessFeedback = new Interaction("If you could change just one thing about the business of theater in Chicago what would it be?", InteractionType.Free, ctxt)
+            .setOnInputHandler(this.saveInputInContext("whatIWouldChangeAboutTheaterBusiness", ctxt))
+        let areYouATheaterGoer = new Interaction("Does that make you a theatergoer in Chicago?", InteractionType.YesNo, ctxt)
+        areYouATheaterProfessional.initializeWithYesNoSelectors(theaterBusinessFeedback, areYouATheaterGoer);
 
-        afterGettingReference.initializeWithYesNoSelectors(afterGettingReference_yes, afterGettingReference_no)
+        let theatergoerFeedback = new Interaction("Is there anything about seeing theater in Chicago that leaves something to be desired?", InteractionType.Free, ctxt);
+        let areYouOutsideOfChicago = new Interaction("Are you a theatergoer outside of Chicago?", InteractionType.YesNo, ctxt);
+
+        areYouATheaterGoer.initializeWithYesNoSelectors(theatergoerFeedback, areYouOutsideOfChicago)
+
+        let doYouPlanTripsToChicagoToSeeTheater = new Interaction("Have you ever planned a trip to Chicago with the intent of seeing theater?", InteractionType.YesNo, ctxt)
+            .setOnInputHandler(this.saveInputInContext("isAChiagoTheaterTripPlanner", ctxt));
+
+        //ends
+        let awardsShowQuestion = new Interaction("Hey I have another question for you: what do you think of awards for theater?  What do you think their purpose is?  Do they have their desired effects?  Is there a good example of an effective theater award? (double spaced, due in 2 minutes).", InteractionType.Free, ctxt)
+            .setOnInputHandler(this.saveInputInContext("purposeAndEffectsOfAwardsShowOpinion", ctxt));
+        areYouOutsideOfChicago.initializeWithYesNoSelectors(doYouPlanTripsToChicagoToSeeTheater, awardsShowQuestion)
+
+        theatergoerFeedback.initializeWithAnyResponseSelector(awardsShowQuestion);
+        theaterBusinessFeedback.initializeWithAnyResponseSelector(awardsShowQuestion);
+
+        awardsShowQuestion.setOnInputHandler(this.saveInputInContext("awardsShowResponse", ctxt))
+        awardsShowQuestion.initializeWithAnyResponseSelector(self.buildAfterPitchConversationTree2(ctxt))
 
         return hello
     }
 
+    buildAfterPitchConversationTree2(ctxt: any): Interaction {
+        let twentyQuestions = new Interaction("Well that's what this whole game of 20 questions is about.  We're building a service that will film bootlegs of the best new theater being born in Chicago, and we'll host it on an exclusive streaming site.  This one, actually.", InteractionType.Free, ctxt);
+
+        return twentyQuestions;
+    }
+
     buildAfterPitchConversationTree(ctxt: any): Interaction {
-        this.interactions = []
         let askForFeedbackFake = new Interaction("Well, what did you think?", InteractionType.Fake, ctxt)
             .setOverwrite("Brilliant!  How did you ever come up with this idea?  Please take my money now.  Please take my social security.  My social security is 012-553-0213.  Tyler is so talented.  Ethan is so talented.  I love the internet, the internet loves me!")
 

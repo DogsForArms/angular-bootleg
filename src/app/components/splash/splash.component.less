@@ -11,6 +11,23 @@ splash {
     display:block;
     width:100%;
     height:100%;
+
+    .scroll {
+      display: block;
+      float: left;
+      height: 40%;
+      overflow-x:hidden;
+      overflow-y:scroll;
+    }
+    .scroll::-webkit-scrollbar {
+      width:30px; // manage scrollbar width here
+    }
+    .scroll::-webkit-scrollbar * {
+      background:transparent; // manage scrollbar background color here
+    }
+    .scroll::-webkit-scrollbar-thumb {
+      background:rgba(255,0,0,0.0) !important; // manage scrollbar thumb background color here
+    }
     
     interaction {
       z-index: 1;
@@ -29,6 +46,7 @@ splash {
       video {
         object-fit: cover;
         object-position: right;
+        position: absolute;
       }
 
     }

@@ -1,11 +1,13 @@
 
 <div class='chat'>
-    <interaction
-        *ngFor='let interaction of interactions; let i = index'
-        [interaction]=interaction
-        [addNextInteraction]=(boundAddInteraction)
-        [isActive]='interactions.length - 1 === i'>
-    </interaction>
+    <div class='scroll' #scroll>
+        <interaction
+            *ngFor='let interaction of interactions; let i = index'
+            [interaction]=interaction
+            [addNextInteraction]=(boundAddInteraction)
+            [isActive]='interactions.length - 1 === i'>
+        </interaction>
+    </div>
 
     <bl-video 
         [controls]=false
