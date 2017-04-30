@@ -4,8 +4,8 @@ import { Component, ViewChild, Input, ElementRef } from '@angular/core'
     moduleId: module.id,
     selector: 'bl-video',
     template: '' +
-`<video controls #player>
-    <source src="{{videoSource}}" type="video/mp4" />
+`<video controls #player >
+    <source src="{{videoSource}}" type="video/mp4"/>
     Browser not supported
 </video>`
 })
