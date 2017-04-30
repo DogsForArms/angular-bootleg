@@ -37,6 +37,20 @@ interaction {
             }
         }
 
+        multiple-choice {
+            flex: 2;
+            resize: none;
+
+            .options-container {
+                color: rgba(255,255,255,0.6);
+
+                .selected {
+                    text-transform: capitalize;
+                    color: @color-bright;
+                }
+            }
+        }
+
         fake-type {
             flex: 2;
 

@@ -1,5 +1,6 @@
+import * as _ from 'lodash'
 
-export enum InteractionType { YesNo, Free, Fake, None }
+export enum InteractionType { MultipleChoice, YesNo, Free, Fake, None }
 
 //Interaction
 export class Interaction {
@@ -12,9 +13,9 @@ export class Interaction {
     private onPromptComplete:(interaction: Interaction) => void
     private overwrite: string
 
-    constructor(prompt: string, type: InteractionType, context: any) {
+    constructor(prompt: string, context: any) {
         this.prompt = prompt
-        this.type = type
+        this.type = InteractionType.None
         this.context = context
     }
 
@@ -33,28 +34,32 @@ export class Interaction {
     }
 
     initializeWithYesNoSelectors(yesInteraction: Interaction, noInteraction: Interaction) {
-        if (this.type != InteractionType.YesNo) {
-            console.error("InteractionType is not of YesNo, can't set nextInteraction(%s) response selector.  Interaction(%s)", (yesInteraction.prompt + ':' + noInteraction.prompt), this.prompt)
-            return
-        }
-
-        this.selectors = [
-            new Selector([/y/i]).setNextInteraction(yesInteraction),
-            new Selector([/n/i]).setNextInteraction(noInteraction)
-        ]
+        this.initializeWithMultipleChoiceSelector([{
+            text: 'y',
+            interaction: yesInteraction
+        }, {
+            text: 'n',
+            interaction: noInteraction
+        }])
+        this.type = InteractionType.YesNo
     }
 
     initializeWithAnyResponseSelector(nextInteraction: Interaction) {
+        this.type = InteractionType.Free
+        this.selectors = [ new Selector([/.*/i]).setNextInteraction(nextInteraction) ]
+    }
 
-        switch (this.type) {
-            case InteractionType.Free:
-            case InteractionType.Fake:
-            this.selectors = [ new Selector([/.*/i]).setNextInteraction(nextInteraction) ]
-                break;
-            default:
-                console.error("InteractionType is not of TextField or Fake type, can't set nextInteraction(%s) response selector.  Interaction(%s)", nextInteraction.prompt, this.prompt)
-        }
-
+    initializeWithFakeResponseSelector(nextInteraction: Interaction) {
+        this.type = InteractionType.Fake
+        this.selectors = [ new Selector([/.*/i]).setNextInteraction(nextInteraction) ]
+    }
+    
+    initializeWithMultipleChoiceSelector(choices: {text: string, interaction: Interaction}[]) {
+        this.type = InteractionType.MultipleChoice
+        this.selectors = _.map(choices, choice => { 
+            let reg = new RegExp(choice.text, 'i')
+            return new Selector([ reg ]).setNextInteraction(choice.interaction).setTitle(choice.text)
+        })
     }
 
     setOnInputHandler(handler:(input: string)=> void): Interaction {
@@ -68,7 +73,6 @@ export class Interaction {
     }
 
     setOverwrite(overwrite: string): Interaction {
-        if (this.type != InteractionType.Fake) { return }
         this.overwrite = overwrite
         return this
     }
@@ -111,6 +115,7 @@ export class Interaction {
 export class Selector {
     regs: RegExp[]
     nextInteraction: Interaction
+    title: string
     // saved on response
     regMatch: RegExpMatchArray
 
@@ -129,6 +134,11 @@ export class Selector {
     setNextInteraction(interaction: Interaction): Selector {
         this.nextInteraction = interaction
         return this
+    }
+
+    setTitle(title: string) {
+        this.title = title
+        return this;
     }
 
     toString(): string {

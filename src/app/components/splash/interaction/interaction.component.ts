@@ -1,4 +1,4 @@
-import {Component, Input, ElementRef} from '@angular/core'
+import {Component, Input, Output, ElementRef} from '@angular/core'
 import {FormBuilder} from '@angular/forms'
 
 import {Interaction, InteractionType} from './interaction'
@@ -11,7 +11,7 @@ import {FakePipe} from './fake.pipe'
 })
 
 export class InteractionComponent {
-    debugging = false;
+    debugging = false
 
     @Input()
     interaction: Interaction
@@ -76,7 +76,7 @@ export class InteractionComponent {
                     this.renderUserInput()
                 }
             }
-        }, this.debugging ? 0 : Math.random() * 80 + 20)
+        }, this.debugging ? 0 : Math.random() * 50 + 10)
     }
 
     userTypedSomething(event: any) {

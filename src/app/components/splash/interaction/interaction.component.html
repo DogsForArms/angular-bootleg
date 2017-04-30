@@ -21,4 +21,10 @@
                 [tryToSubmit]='tryToSubmitBound'
                 replacementSentence='{{interaction.getOverwrite()}}'></fake-type>
 
+    <multiple-choice
+        *ngSwitchCase=interactionType.MultipleChoice
+        [interaction]=interaction
+        [focus]='isFocused()'
+        [tryToSubmit]='tryToSubmitBound'></multiple-choice>
+
 </div>
