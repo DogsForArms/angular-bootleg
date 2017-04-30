@@ -36,7 +36,6 @@ export class SplashComponent {
             .subscribe(convContext => {
                 self.conversationContextId = convContext.id
                 self.addInteraction(self.buildConversationTree())
-                // self.addInteraction(self.buildAfterPitchConversationTree2({}))
             })
         this.scrollToBottom();
     }
