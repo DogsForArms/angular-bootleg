@@ -106,7 +106,7 @@ export class InteractionComponent {
             this.waitingForInput = false
             this.addNextInteraction(sel.nextInteraction)
         } else
-        if (sel && !sel.nextInteraction){
+        if (sel && !sel.nextInteraction) {
             console.log("conversation finished!")
         }
         return true

@@ -24,5 +24,4 @@ export class FocusDirective {
     onBlur(){
         this.updateFocus()
      }
-
 }

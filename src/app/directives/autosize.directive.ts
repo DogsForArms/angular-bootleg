@@ -5,12 +5,11 @@ import { ElementRef, HostListener, Directive} from '@angular/core';
 })
 
 export class Autosize {
- @HostListener('input',['$event.target'])
+  @HostListener('input',['$event.target'])
   onInput(textArea: HTMLTextAreaElement): void {
     this.adjust();
   }
-  constructor(public element: ElementRef){
-  }
+  constructor(public element: ElementRef){}
   ngAfterContentChecked(): void{
     this.adjust();
   }

@@ -9,10 +9,10 @@ import { AppComponent }         from './app.component'
 import { AboutComponent }       from './components/about.component'
 import { UserComponent }        from './components/user.component'
 import { SplashComponent }      from './components/splash/splash.component'
-
 import { InteractionComponent } from './components/splash/interaction/interaction.component'
+import { VideoComponent }       from './components/video.component'
 
-import { FreeTypeComponent }       from './components/splash/interaction/freeType.component'
+import { FreeTypeComponent }    from './components/splash/interaction/freeType.component'
 import { YesNoComponent }       from './components/splash/interaction/yesNo.component'
 import { FakeTypeComponent }    from './components/splash/interaction/fakeType.component'
 
@@ -25,7 +25,7 @@ import { routing }              from './app.routing'
 
 @NgModule({
   imports:      [ BrowserModule, FormsModule, HttpModule, ReactiveFormsModule, routing],
-  declarations: [ AppComponent, UserComponent, AboutComponent, SplashComponent, InteractionComponent, FreeTypeComponent, YesNoComponent, FakeTypeComponent, FocusDirective, Autosize ],
+  declarations: [ AppComponent, UserComponent, AboutComponent, SplashComponent, InteractionComponent, FreeTypeComponent, YesNoComponent, FakeTypeComponent, FocusDirective, Autosize, VideoComponent ],
   bootstrap:    [ AppComponent ]
 })
 export class AppModule { }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core'
 import { InteractionType, Interaction, Selector } from './interaction/interaction'
 import { ConversationContextService, ConversationContextSaveParams, ConversationContextSaveResponse } from '../../services/conversationContext.service'
-
+import { VideoComponent } from '../video.component'
 
 @Component({
     moduleId: module.id,
@@ -17,8 +17,6 @@ export class SplashComponent {
     conversationContextId: number
 
     constructor(private conversationContextService: ConversationContextService) {
-        
-        // this.addInteraction(this.buildAfterPitchConversationTree({}))
     }
 
     ngOnInit() {
