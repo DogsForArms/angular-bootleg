@@ -15,8 +15,12 @@ export class FocusDirective {
     }
 
     private updateFocus() {
-        if (this.focus) {
-            this.element.nativeElement.focus()
+        let self = this
+        if (self.focus) {
+            //in safari, blur is called before blur actually happens, so calling focus now is lost in a frame.
+            setTimeout(function() {
+                self.element.nativeElement.focus()
+            }, 1)
         }
     }
 
